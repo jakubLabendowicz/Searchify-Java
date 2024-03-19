@@ -1,7 +1,8 @@
 package bp.PAI_jwt.service;
 
+import bp.PAI_jwt.adapter.UserDTOAdapter;
 import bp.PAI_jwt.model.User;
-import bp.PAI_jwt.model.UserDto;
+import bp.PAI_jwt.dto.UserDTO;
 import bp.PAI_jwt.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,12 +34,14 @@ public class JwtUserDetailsService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(), user.getPassword(),new ArrayList<>());
     }
-    public User save(UserDto user) {
-        User newUser = new User();
-        newUser.setUsername(user.getUsername());
-        newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
-        newUser.setFirstname(user.getFirstname());
-        newUser.setLastname(user.getLastname());
-        return userDao.save(newUser);
+    public User save(UserDTO userDTO) {
+        //Tydzień 2, Wzorzec Adapter
+        // Metoda `save()` przyjmuje obiekt `UserDTO`, który jest konwertowany na obiekt typu `User` za pomocą klasy `UserDTOAdapter`, wykorzystującej wzorzec adaptera.
+        // Następnie hasło użytkownika jest szyfrowane i zapisywane w bazie danych przy użyciu interfejsu DAO (Data Access Object).
+        UserDTOAdapter userDTOAdapter = new UserDTOAdapter(userDTO);
+        User user = (User) userDTOAdapter.clone();
+        //Koniec, Tydzień 2, Wzorzec Adapter
+        user.setPassword(bcryptEncoder.encode(user.getPassword()));
+        return userDao.save(user);
     }
 }
