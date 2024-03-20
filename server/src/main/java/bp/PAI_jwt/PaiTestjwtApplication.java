@@ -1,5 +1,8 @@
 package bp.PAI_jwt;
 
+import bp.PAI_jwt.decorator.ExtendedTrackInfoDecorator;
+import bp.PAI_jwt.decorator.TrackDecorator;
+import bp.PAI_jwt.model.Track;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +20,6 @@ public class PaiTestjwtApplication {
 		SpringApplication.run(PaiTestjwtApplication.class, args);
 	}
 
-
 	@Bean
 	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurer() {
@@ -27,5 +29,4 @@ public class PaiTestjwtApplication {
 			}
 		};
 	}
-
 }

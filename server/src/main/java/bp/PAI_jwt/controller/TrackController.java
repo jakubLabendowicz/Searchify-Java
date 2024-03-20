@@ -5,7 +5,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import bp.PAI_jwt.bridge.BasicTrackOperations;
+import bp.PAI_jwt.bridge.ExtendedTrackOperations;
+import bp.PAI_jwt.bridge.TrackInfo;
+import bp.PAI_jwt.bridge.TrackOperations;
 import bp.PAI_jwt.builder.TrackBuilder;
+import bp.PAI_jwt.decorator.CategoryTrackDecorator;
+import bp.PAI_jwt.decorator.TrackDecorator;
 import bp.PAI_jwt.model.Track;
 import bp.PAI_jwt.model.User;
 import bp.PAI_jwt.repository.FavoriteRepository;
@@ -32,6 +38,40 @@ public class TrackController {
     TrackRepository trackRepository;
 
     ResponseFactory responseFactory = new ResponseFactoryImpl();
+
+    //Tydzień 2. Wzorzec Bridge Początek - Użycie w endpointach  2 klas pochodnych
+    // Endpoint to get basic info about a track using Bridge pattern
+    @GetMapping("/{id}/basicInfo")
+    public ResponseEntity<String> getBasicTrackInfo(@PathVariable("id") long id) {
+        // Find the track by id
+        Track track = trackRepository.findById(id).orElse(null);
+
+        // If the track is found, use Bridge pattern to get basic info
+        if (track != null) {
+            TrackOperations trackOperations = new BasicTrackOperations(track);
+            String basicInfo = trackOperations.getBasicInfo();
+            return new ResponseEntity<>(basicInfo, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Track not found", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // Endpoint to get extended info about a track using Bridge pattern
+    @GetMapping("/{id}/extendedInfo")
+    public ResponseEntity<String> getExtendedTrackInfo(@PathVariable("id") long id) {
+        // Find the track by id
+        Track track = trackRepository.findById(id).orElse(null);
+
+        // If the track is found, use Bridge pattern to get extended info
+        if (track != null) {
+            TrackOperations trackOperations = new ExtendedTrackOperations(track);
+            String extendedInfo = trackOperations.getBasicInfo();
+            return new ResponseEntity<>(extendedInfo, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Track not found", HttpStatus.NOT_FOUND);
+        }
+    }
+    //Tydzień 2. Wzorzec Bridge Koniec
 
     @GetMapping("")
     public ResponseEntity<List<TrackDTO>> getAllTracks(@RequestParam(required = false) String name) {
@@ -62,21 +102,24 @@ public class TrackController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TrackDTO> getTrackById(@PathVariable("id") long id) {
+    public ResponseEntity<String> getTrackCategory(@PathVariable("id") long id) {
         Optional<Track> trackData = trackRepository.findById(id);
 
         if (trackData.isPresent()) {
-            String currentUsername = getCurrentUsername();
             Track track = trackData.get();
-            boolean isFavorite = isFavoriteForUser(track, currentUsername);
+            //Tydzień 2. Wzorzec Decorator Początek - użycie w celu wyświetlenia kategori utworu.
+            // Utwórz dekoratora kategorii i udekoruj obiekt Track
+            TrackDecorator categoryDecorator = new CategoryTrackDecorator(track, "Rock");
 
-            TrackDTO trackDTO = new TrackDTO(track, isFavorite);
+            // Wyświetl informacje o kategorii
+            String infoWithCategory = categoryDecorator.displayInfo();
 
-            return new ResponseEntity<>(trackDTO, HttpStatus.OK);
+            return new ResponseEntity<>(infoWithCategory, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Track not found", HttpStatus.NOT_FOUND);
         }
     }
+//Tydzień 2. Wzorzec Decorator Koniec
 
 
     @PostMapping("")
