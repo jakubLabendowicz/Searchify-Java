@@ -57,6 +57,7 @@ public class TrackBuilder {
     }
 
     public Track build() {
+
         return new Track(name, String.join(",", artists), spotifyId, previewUrl, popularity, durationMs, image);
     }
 }
