@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import bp.PAI_jwt.flyweight.UserFlyweight;
 import bp.PAI_jwt.model.Favorite;
 import bp.PAI_jwt.model.Track;
 import bp.PAI_jwt.model.User;
@@ -61,6 +62,7 @@ public class UserController {
         }
 
         String username = authentication.getName();
+        Optional<User> user2 = UserFlyweight.findByUsername(username, userRepository);
         Optional<User> user = Optional.ofNullable(userRepository.findByUsername(username));
 
         return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
