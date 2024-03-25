@@ -1,6 +1,6 @@
 package bp.PAI_jwt.model;
 
-import bp.PAI_jwt.utils.Cloneable;
+import bp.PAI_jwt.prototype.Cloneable;
 
 import javax.persistence.*;
 import java.util.List;

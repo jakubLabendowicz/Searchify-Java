@@ -2,7 +2,7 @@ package bp.PAI_jwt.model;
 
 import javax.persistence.*;
 
-import bp.PAI_jwt.utils.Cloneable;
+import bp.PAI_jwt.prototype.Cloneable;
 import net.minidev.json.annotate.JsonIgnore;
 
 import java.util.List;

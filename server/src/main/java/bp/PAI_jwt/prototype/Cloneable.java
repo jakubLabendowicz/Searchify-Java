@@ -1,4 +1,4 @@
-package bp.PAI_jwt.utils;
+package bp.PAI_jwt.prototype;
 
 //Tydzień 1, Wzorzec Prototype
 //Interfejs Cloneable definiuje metodę clone() umożliwiającą tworzenie kopii obiektów.

@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import bp.PAI_jwt.bridge.BasicTrackOperations;
 import bp.PAI_jwt.bridge.ExtendedTrackOperations;
-import bp.PAI_jwt.bridge.TrackInfo;
 import bp.PAI_jwt.bridge.TrackOperations;
 import bp.PAI_jwt.builder.TrackBuilder;
 import bp.PAI_jwt.decorator.CategoryTrackDecorator;
@@ -17,10 +16,9 @@ import bp.PAI_jwt.model.User;
 import bp.PAI_jwt.repository.FavoriteRepository;
 import bp.PAI_jwt.repository.TrackRepository;  // Make sure to import the appropriate repository
 import bp.PAI_jwt.repository.UserRepository;
-import bp.PAI_jwt.response.ResponseBody;
-import bp.PAI_jwt.response.ResponseFactory;
-import bp.PAI_jwt.response.ResponseFactoryImpl;
-import bp.PAI_jwt.utils.Cloneable;
+import bp.PAI_jwt.factory.ResponseBody;
+import bp.PAI_jwt.factory.ResponseFactory;
+import bp.PAI_jwt.factory.ResponseFactoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

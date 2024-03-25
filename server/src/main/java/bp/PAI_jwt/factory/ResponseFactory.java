@@ -1,4 +1,4 @@
-package bp.PAI_jwt.response;
+package bp.PAI_jwt.factory;
 
 public interface ResponseFactory {
 
