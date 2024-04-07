@@ -3,7 +3,7 @@ package bp.PAI_jwt.proxy;
 import bp.PAI_jwt.bridge.TrackOperations;
 import bp.PAI_jwt.model.Track;
 import bp.PAI_jwt.service.ExternalTrackService;
-//// Tydzień 3 Wzorzec Proxy Początek
+//// Tydzień 4 Wzorzec Proxy Początek
 public class TrackProxy implements TrackOperations {
     private final ExternalTrackService externalTrackService;
     private final long trackId;
@@ -25,4 +25,4 @@ public class TrackProxy implements TrackOperations {
         return "Basic Info: " + cachedTrack.getName() + " by " + cachedTrack.getArtists();
     }
 }
-// Tydzień 3 Wzorzec Proxy Koniec
+// Tydzień 4 Wzorzec Proxy Koniec

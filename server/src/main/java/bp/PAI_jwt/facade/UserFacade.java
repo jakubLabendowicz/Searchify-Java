@@ -14,7 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-// Tydzień 3, Wzorzec Facade
+// Tydzień 4, Wzorzec Facade
 // Klasa `UserFacade` jest fasadą umożliwiającą uwierzytelnianie użytkowników oraz rejestrację nowych użytkowników za pomocą Spring Security i JWT.
 // Dodatkowo wykorzystuje wzorzec Composite do generowania i wyświetlania kompletnych komunikatów.
 @Component
@@ -56,4 +56,4 @@ public class UserFacade {
         return userDetailsService.save(user);
     }
 }
-//Koniec, Tydzień 3, Wzorzec Facade
+//Koniec, Tydzień 4, Wzorzec Facade

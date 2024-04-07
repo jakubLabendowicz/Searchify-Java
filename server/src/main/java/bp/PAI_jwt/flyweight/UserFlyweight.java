@@ -7,7 +7,7 @@ import java.util.Optional;
 import bp.PAI_jwt.model.User;
 import bp.PAI_jwt.repository.UserRepository;
 
-// Tydzień 3, Wzorzec Flyweight
+// Tydzień 4, Wzorzec Flyweight
 // Klasa `UserFlyweight` implementuje wzorzec Flyweight, który umożliwia współdzielenie obiektów w celu zaoszczędzenia pamięci poprzez przechowywanie użytkowników w statycznej mapie,
 // gdzie kluczem jest nazwa użytkownika, aby uniknąć powtarzających się obiektów User i zmniejszyć liczbę operacji pobierania z repozytorium poprzez cachowanie wyników.
 public class UserFlyweight {
@@ -25,4 +25,4 @@ public class UserFlyweight {
         }
     }
 }
-//Koniec, Tydzień 3, Wzorzec Flyweight
+//Koniec, Tydzień 4, Wzorzec Flyweight
