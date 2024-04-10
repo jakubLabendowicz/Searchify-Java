@@ -9,13 +9,15 @@ import bp.PAI_jwt.bridge.BasicTrackOperations;
 import bp.PAI_jwt.bridge.ExtendedTrackOperations;
 import bp.PAI_jwt.bridge.TrackOperations;
 import bp.PAI_jwt.builder.TrackBuilder;
+import bp.PAI_jwt.command.BasicTrackInfoCommand;
+import bp.PAI_jwt.command.TrackCommand;
 import bp.PAI_jwt.decorator.CategoryTrackDecorator;
 import bp.PAI_jwt.decorator.TrackDecorator;
 import bp.PAI_jwt.model.Track;
 import bp.PAI_jwt.model.User;
 import bp.PAI_jwt.proxy.TrackProxy;
 import bp.PAI_jwt.repository.FavoriteRepository;
-import bp.PAI_jwt.repository.TrackRepository;  // Make sure to import the appropriate repository
+import bp.PAI_jwt.repository.TrackRepository;
 import bp.PAI_jwt.repository.UserRepository;
 import bp.PAI_jwt.factory.ResponseBody;
 import bp.PAI_jwt.factory.ResponseFactory;
@@ -43,39 +45,25 @@ public class TrackController {
     @Autowired
     ExternalTrackService externalTrackService; // Wstrzyknięcie ExternalTrackService
 
-    //Tydzień 2. Wzorzec Bridge Początek - Użycie w endpointach  2 klas pochodnych
-    // Endpoint to get basic info about a track using Bridge pattern
-//    @GetMapping("/{id}/basicInfo")
-//    public ResponseEntity<String> getBasicTrackInfo(@PathVariable("id") long id) {
-//        // Find the track by id
-//        Track track = trackRepository.findById(id).orElse(null);
-//
-//        // If the track is found, use Bridge pattern to get basic info
-//        if (track != null) {
-//            TrackOperations trackOperations = new BasicTrackOperations(track);
-//            String basicInfo = trackOperations.getBasicInfo();
-//            return new ResponseEntity<>(basicInfo, HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>("Track not found", HttpStatus.NOT_FOUND);
-//        }
-//    }
 
-    // Tydzień 3 Wzorzec Proxy Początek
+    // Tydzień 4 Wzorzec Command Początek - Implentacja wzorca w endpoincie, W metodzie getBasicTrackInfo kontrolera
+    // TrackController tworzymy instancję klasy BasicTrackInfoCommand i wykonujemy ją. W ten sposób oddzielamy żądanie
+    // od rzeczywistej operacji do wykonania, co jest zgodne z wzorcem Command.
     @GetMapping("/{id}/basicInfo")
     public ResponseEntity<String> getBasicTrackInfo(@PathVariable("id") long id) {
         // Find the track by id
         Track track = trackRepository.findById(id).orElse(null);
 
-        // If the track is found, use TrackProxy to get basic info
+        // If the track is found, execute the command to get basic info
         if (track != null) {
-            TrackOperations trackProxy = new TrackProxy(externalTrackService, id);
-            String basicInfo = trackProxy.getBasicInfo();
+            TrackCommand command = new BasicTrackInfoCommand(externalTrackService, id);
+            String basicInfo = command.execute();
             return new ResponseEntity<>(basicInfo, HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Track not found", HttpStatus.NOT_FOUND);
         }
     }
-    // Tydzień 3 Wzorzec Proxy Koniec
+    //Tydzień 4 Wzorzec Command Koniec
 
     // Endpoint to get extended info about a track using Bridge pattern
     @GetMapping("/{id}/extendedInfo")
@@ -339,4 +327,5 @@ public class TrackController {
         }
     }
 }
+
 

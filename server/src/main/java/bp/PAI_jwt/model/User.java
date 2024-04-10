@@ -30,6 +30,7 @@ public class User implements Cloneable{
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Favorite> favorites;
+    private String firstName;
 
 
     public User() {
@@ -96,6 +97,14 @@ public class User implements Cloneable{
     @Override
     public Object clone() {
         return new User(id, firstname, lastname, username, password);
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getFirstName() {
+        return firstName;
     }
     //Koniec, Tydzień 1, Wzorzec Prototype
 }
