@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import bp.PAI_jwt.Iterator.UserIterator;
 import bp.PAI_jwt.flyweight.UserFlyweight;
+import bp.PAI_jwt.mediator.FavoriteMediator;
 import bp.PAI_jwt.model.Favorite;
 import bp.PAI_jwt.model.Track;
 import bp.PAI_jwt.model.User;
@@ -95,7 +96,9 @@ public class UserController {
         }
 
         String username = authentication.getName();
+        // Tydzień 4, Wzorzec Flyweight
         Optional<User> user = UserFlyweight.findByUsername(username, userRepository);
+        //Koniec, Tydzień 4, Wzorzec Flyweight
 
         return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -262,31 +265,50 @@ public class UserController {
     // Tydzień 5 Wzorzec Template Koniec
 
 
+    @Autowired
+    private FavoriteMediator favoriteMediator;
+
     @PostMapping("/self/favorites/{trackId}")
     public ResponseEntity<Favorite> addSelfFavorite(@PathVariable long trackId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
         Optional<User> userOptional = Optional.ofNullable(userRepository.findByUsername(username));
-        Optional<Track> trackOptional = trackRepository.findById(trackId);
-
-        if (userOptional.isPresent() && trackOptional.isPresent()) {
-            User user = userOptional.get();
-            Track track = trackOptional.get();
-
-            Optional<Favorite> existingFavorite = favoriteRepository.findByUserAndTrack(user, track);
-
-            if (existingFavorite.isPresent()) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Favorite already exists
-            }
-
-            Favorite favorite = new Favorite(user, track);
-            favoriteRepository.save(favorite);
-            return new ResponseEntity<>(favorite, HttpStatus.CREATED);
+        if (userOptional.isPresent()) {
+            long userId = userOptional.get().getId();
+            // Tydzień 5, Wzorzec Mediator
+            return favoriteMediator.addSelfFavorite(userId, trackId);
+            //Koniec, Tydzień 5, Wzorzec Mediator
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // User or Track not found
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // User not found
         }
     }
+
+//    @PostMapping("/self/favorites/{trackId}")
+//    public ResponseEntity<Favorite> addSelfFavorite(@PathVariable long trackId) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String username = authentication.getName();
+//
+//        Optional<User> userOptional = Optional.ofNullable(userRepository.findByUsername(username));
+//        Optional<Track> trackOptional = trackRepository.findById(trackId);
+//
+//        if (userOptional.isPresent() && trackOptional.isPresent()) {
+//            User user = userOptional.get();
+//            Track track = trackOptional.get();
+//
+//            Optional<Favorite> existingFavorite = favoriteRepository.findByUserAndTrack(user, track);
+//
+//            if (existingFavorite.isPresent()) {
+//                return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Favorite already exists
+//            }
+//
+//            Favorite favorite = new Favorite(user, track);
+//            favoriteRepository.save(favorite);
+//            return new ResponseEntity<>(favorite, HttpStatus.CREATED);
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // User or Track not found
+//        }
+//    }
 
     @GetMapping("/{userId}/favorites")
     public ResponseEntity<List<Favorite>> getFavoritesByUser(@PathVariable long userId) {
