@@ -3,13 +3,15 @@ package bp.PAI_jwt.model;
 import javax.persistence.*;
 
 import bp.PAI_jwt.prototype.Cloneable;
+import bp.PAI_jwt.visitor.Visitable;
+import bp.PAI_jwt.visitor.Visitor;
 import net.minidev.json.annotate.JsonIgnore;
 
 import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User implements Cloneable{
+public class User implements Cloneable, Visitable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -96,6 +98,11 @@ public class User implements Cloneable{
     @Override
     public Object clone() {
         return new User(id, firstname, lastname, username, password);
+    }
+
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
     //Koniec, Tydzień 1, Wzorzec Prototype
 }

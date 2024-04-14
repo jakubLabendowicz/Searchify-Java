@@ -1,13 +1,15 @@
 package bp.PAI_jwt.model;
 
 import bp.PAI_jwt.prototype.Cloneable;
+import bp.PAI_jwt.visitor.Visitable;
+import bp.PAI_jwt.visitor.Visitor;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "tracks")
-public class Track implements Cloneable {
+public class Track implements Cloneable, Visitable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -146,4 +148,9 @@ public class Track implements Cloneable {
     }
     //Koniec, Tydzień 1, Wzorzec Prototype
 
+
+    @Override
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
 }

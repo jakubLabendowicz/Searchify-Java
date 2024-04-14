@@ -12,6 +12,8 @@ import bp.PAI_jwt.model.User;
 import bp.PAI_jwt.repository.FavoriteRepository;
 import bp.PAI_jwt.repository.TrackRepository;
 import bp.PAI_jwt.repository.UserRepository;  // Make sure to import the appropriate repository
+import bp.PAI_jwt.visitor.ElementVisitor;
+import bp.PAI_jwt.visitor.Visitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,11 @@ public class UserController {
         try {
             List<User> users = new ArrayList<>();
             userRepository.findAll().forEach(users::add);
+
+            Visitor visitor = new ElementVisitor();
+            for (User user : users) {
+                user.accept(visitor);
+            }
 
             if (users.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
