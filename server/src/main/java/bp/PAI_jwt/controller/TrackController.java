@@ -11,6 +11,10 @@ import bp.PAI_jwt.bridge.TrackOperations;
 import bp.PAI_jwt.builder.TrackBuilder;
 import bp.PAI_jwt.decorator.CategoryTrackDecorator;
 import bp.PAI_jwt.decorator.TrackDecorator;
+import bp.PAI_jwt.interpreter.Context;
+import bp.PAI_jwt.interpreter.Expression;
+import bp.PAI_jwt.interpreter.NameExpression;
+import bp.PAI_jwt.model.Favorite;
 import bp.PAI_jwt.model.Track;
 import bp.PAI_jwt.model.User;
 import bp.PAI_jwt.proxy.TrackProxy;
@@ -21,6 +25,7 @@ import bp.PAI_jwt.factory.ResponseBody;
 import bp.PAI_jwt.factory.ResponseFactory;
 import bp.PAI_jwt.factory.ResponseFactoryImpl;
 import bp.PAI_jwt.service.ExternalTrackService;
+import bp.PAI_jwt.interpreter.Interpreter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -338,5 +343,21 @@ public class TrackController {
             return favorite;
         }
     }
+
+    // Tydzień 5, Wzorzec Interpreter
+    @GetMapping("/favorites")
+    public ResponseEntity<List<Track>> searchFavoritesByName(@RequestParam("name") String name) {
+        List<Track> favorites = getFavoritesByName(name);
+        return ResponseEntity.ok(favorites);
+    }
+
+    private List<Track> getFavoritesByName(String name) {
+        List<Favorite> allFavorites = favoriteRepository.findAll();
+        Context context = new Context(allFavorites);
+        Expression nameExpression = new NameExpression(name);
+        Interpreter interpreter = new Interpreter(nameExpression);
+        return interpreter.interpret(context);
+    }
+    //Koniec, Tydzień 5, Wzorzec Interpreter
 }
 
