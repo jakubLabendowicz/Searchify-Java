@@ -26,6 +26,9 @@ import bp.PAI_jwt.factory.ResponseFactory;
 import bp.PAI_jwt.factory.ResponseFactoryImpl;
 import bp.PAI_jwt.service.ExternalTrackService;
 import bp.PAI_jwt.interpreter.Interpreter;
+import bp.PAI_jwt.strategy.AdvancedFavoriteProcessingStrategy;
+import bp.PAI_jwt.strategy.BasicFavoriteProcessingStrategy;
+import bp.PAI_jwt.strategy.FavoriteProcessingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -359,5 +362,35 @@ public class TrackController {
         return interpreter.interpret(context);
     }
     //Koniec, Tydzień 5, Wzorzec Interpreter
+
+
+
+    private static FavoriteProcessingStrategy processingStrategy;
+
+    public void setProcessingStrategy(FavoriteProcessingStrategy processingStrategy) {
+        this.processingStrategy = processingStrategy;
+    }
+
+    @PostMapping("/favoritestrategy")
+    public ResponseEntity<String> setProcessingStrategy(@RequestParam("strategy") String strategyName) {
+        switch (strategyName) {
+            case "basic":
+                processingStrategy = new BasicFavoriteProcessingStrategy();
+                break;
+            case "advanced":
+                processingStrategy = new AdvancedFavoriteProcessingStrategy();
+                break;
+            default:
+                return ResponseEntity.badRequest().body("Nieprawidłowa nazwa strategii");
+        }
+        return ResponseEntity.ok("Strategia przetwarzania ulubionych utworów zmieniona na: " + strategyName);
+    }
+
+    @PostMapping("/processfavorite")
+    public ResponseEntity<String> processFavorite(@RequestBody Favorite favorite) {
+        // Przetwarzanie ulubionego utworu za pomocą ustawionej strategii
+        processingStrategy.processFavorite(favorite);
+        return ResponseEntity.ok("Ulubiony utwór przetworzony pomyślnie");
+    }
 }
 
