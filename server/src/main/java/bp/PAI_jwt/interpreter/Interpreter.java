@@ -13,7 +13,6 @@ public class Interpreter {
     }
 
     public List<Track> interpret(Context context) {
-        // Interpretuj wyrażenie za pomocą kontekstu
         return expression.interpret(context);
     }
 }

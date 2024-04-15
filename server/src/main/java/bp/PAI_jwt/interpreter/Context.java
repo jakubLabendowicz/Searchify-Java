@@ -15,7 +15,6 @@ public class Context {
     }
 
     public List<Track> getFavoritesByName(String name) {
-        // Zwróć ulubione utwory użytkownika o podanej nazwie
         List<Track> result = new ArrayList<>();
         for (Favorite favorite : favorites) {
             Track track = favorite.getTrack();

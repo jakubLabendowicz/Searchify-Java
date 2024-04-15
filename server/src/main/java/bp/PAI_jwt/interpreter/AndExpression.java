@@ -16,10 +16,9 @@ public class AndExpression implements Expression {
 
     @Override
     public List<Track> interpret(Context context) {
-        // Połącz wyniki interpretacji dwóch wyrażeń za pomocą operatora AND
         List<Track> result1 = expression1.interpret(context);
         List<Track> result2 = expression2.interpret(context);
-        result1.retainAll(result2); // Pozostaw tylko wspólne utwory
+        result1.retainAll(result2);
         return result1;
     }
 }

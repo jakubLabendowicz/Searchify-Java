@@ -14,7 +14,6 @@ public class NameExpression implements Expression {
 
     @Override
     public List<Track> interpret(Context context) {
-        // Zwróć listę ulubionych utworów użytkownika, które pasują do podanej nazwy
         return context.getFavoritesByName(name);
     }
 }
