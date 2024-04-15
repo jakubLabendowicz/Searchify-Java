@@ -389,8 +389,8 @@ public class TrackController {
     @PostMapping("/processfavorite")
     public ResponseEntity<String> processFavorite(@RequestBody Favorite favorite) {
         // Przetwarzanie ulubionego utworu za pomocą ustawionej strategii
-        processingStrategy.processFavorite(favorite);
-        return ResponseEntity.ok("Ulubiony utwór przetworzony pomyślnie");
+        Object object = processingStrategy.processFavorite(favorite);
+        return ResponseEntity.ok(object.toString());
     }
     //Koniec, Tydzień 6, Wzorzec Strategy
 }

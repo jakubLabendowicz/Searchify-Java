@@ -6,6 +6,6 @@ import bp.PAI_jwt.model.Favorite;
 // Interfejs `FavoriteProcessingStrategy` definiuje metodę `processFavorite`, która jest odpowiedzialna za przetwarzanie ulubionego elementu.
 // Kod implementuje wzorzec projektowy "Strategy", który umożliwia wybór algorytmu przetwarzania ulubionego elementu w trakcie działania programu.
 public interface FavoriteProcessingStrategy {
-    void processFavorite(Favorite favorite);
+    Object processFavorite(Favorite favorite);
 }
 //Koniec, Tydzień 6, Wzorzec Strategy
