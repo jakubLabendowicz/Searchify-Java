@@ -270,7 +270,6 @@ public class TrackController {
     @Autowired
     private FavoriteRepository favoriteRepository;
 
-    // New method to check if the track is a favorite for the given user
     private boolean isFavoriteForUser(Track track, String username) {
         Optional<User> userOptional = Optional.ofNullable(userRepository.findByUsername(username));
         if (userOptional.isPresent()) {
@@ -280,13 +279,11 @@ public class TrackController {
         return false;
     }
 
-    // New method to get the currently authenticated username
     private String getCurrentUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();
     }
 
-    // New inner class to represent TrackDTO with 'favorite' field
     public static class TrackDTO {
         private final long id;
         private final String name;
@@ -365,6 +362,9 @@ public class TrackController {
 
 
 
+    // Tydzień 6, Wzorzec Strategy
+    // Ten kod wprowadza elastyczność przetwarzania ulubionych elementów poprzez wzorzec Strategy. Metoda `setProcessingStrategy` pozwala na dynamiczną zmianę strategii przetwarzania na podstawie nazwy przekazanej jako parametr.
+    // Natomiast metoda `processFavorite` wykorzystuje ustawioną strategię do przetworzenia ulubionego elementu, co umożliwia zmianę zachowania przetwarzania w czasie działania programu bez konieczności modyfikacji istniejącego kodu.
     private static FavoriteProcessingStrategy processingStrategy;
 
     public void setProcessingStrategy(FavoriteProcessingStrategy processingStrategy) {
@@ -392,5 +392,6 @@ public class TrackController {
         processingStrategy.processFavorite(favorite);
         return ResponseEntity.ok("Ulubiony utwór przetworzony pomyślnie");
     }
+    //Koniec, Tydzień 6, Wzorzec Strategy
 }
 

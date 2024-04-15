@@ -30,19 +30,19 @@ public class JwtAuthenticationController {
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
-        userManager.addObserver(new LoggingUserObserver());
-
-
         // Tydzień 4, Wzorzec Facade
         String token = userFacade.authenticate(authenticationRequest);
         ResponseEntity<?> responseEntity = ResponseEntity.ok(new JwtResponse(token));
         //Koniec, Tydzień 4, Wzorzec Facade
 
-        // Pobierz informacje o zalogowanym użytkowniku
-        User user = userRepository.findByUsername(authenticationRequest.getUsername());
 
-        // Powiadom obserwatorów o zdarzeniu logowania użytkownika
+        // Tydzień 6, Wzorzec Observer
+        // Kod dodaje instancję `LoggingUserObserver` do `UserManager` jako obserwatora, następnie pobiera użytkownika na podstawie nazwy użytkownika przekazanej przez żądanie uwierzytelnienia i powiadamia `UserManager` o zalogowaniu użytkownika, co aktywuje powiadomienie dla wszystkich zarejestrowanych obserwatorów.
+        // Kod ten demonstruje praktyczne zastosowanie wzorca Observer w systemie logowania użytkowników.
+        userManager.addObserver(new LoggingUserObserver());
+        User user = userRepository.findByUsername(authenticationRequest.getUsername());
         userManager.notifyObservers(user);
+        //Koniec, Tydzień 6, Wzorzec Observer
 
         return responseEntity;
     }

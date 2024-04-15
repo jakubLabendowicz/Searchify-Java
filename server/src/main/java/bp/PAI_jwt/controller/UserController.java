@@ -35,10 +35,14 @@ public class UserController {
             List<User> users = new ArrayList<>();
             userRepository.findAll().forEach(users::add);
 
+            // Tydzień 6, Wzorzec Visitor
+            // Ten kod wykonuje iterację po kolekcji użytkowników i wywołuje metodę `accept` na każdym z nich, przekazując odwiedzającego `ElementVisitor`.
+            // W efekcie, każdy użytkownik zostaje odwiedzony przez `ElementVisitor`, co pozwala na wykonanie odpowiednich operacji zdefiniowanych w kontekście wzorca Visitor.
             Visitor visitor = new ElementVisitor();
             for (User user : users) {
                 user.accept(visitor);
             }
+            //Koniec, Tydzień 6, Wzorzec Visitor
 
             if (users.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
