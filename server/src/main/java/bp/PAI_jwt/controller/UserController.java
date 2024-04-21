@@ -16,6 +16,9 @@ import bp.PAI_jwt.repository.UserRepository;
 import bp.PAI_jwt.state.FavoriteContext;
 import bp.PAI_jwt.template.UserTemplate;
 import bp.PAI_jwt.template.UserUpdateTemplate;
+import bp.PAI_jwt.repository.UserRepository;  // Make sure to import the appropriate repository
+import bp.PAI_jwt.visitor.ElementVisitor;
+import bp.PAI_jwt.visitor.Visitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +39,15 @@ public class UserController {
         try {
             List<User> users = new ArrayList<>();
             userRepository.findAll().forEach(users::add);
+
+            // Tydzień 6, Wzorzec Visitor
+            // Ten kod wykonuje iterację po kolekcji użytkowników i wywołuje metodę `accept` na każdym z nich, przekazując odwiedzającego `ElementVisitor`.
+            // W efekcie, każdy użytkownik zostaje odwiedzony przez `ElementVisitor`, co pozwala na wykonanie odpowiednich operacji zdefiniowanych w kontekście wzorca Visitor.
+            Visitor visitor = new ElementVisitor();
+            for (User user : users) {
+                user.accept(visitor);
+            }
+            //Koniec, Tydzień 6, Wzorzec Visitor
 
             if (users.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
