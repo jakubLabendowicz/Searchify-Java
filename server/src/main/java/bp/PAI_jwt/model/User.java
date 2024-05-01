@@ -32,8 +32,9 @@ public class User implements Cloneable, Visitable {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Favorite> favorites;
+    /*
     private String firstName;
-
+*/
 
     public User() {
     }
@@ -100,19 +101,19 @@ public class User implements Cloneable, Visitable {
     public Object clone() {
         return new User(id, firstname, lastname, username, password);
     }
-
+/*
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
     
-
+*/
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
     }
-
+/*
     public String getFirstName() {
         return firstName;
-    }
+    }*/
     //Koniec, Tydzień 1, Wzorzec Prototype
 }

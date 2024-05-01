@@ -7,9 +7,7 @@ import java.util.Optional;
 import bp.PAI_jwt.Iterator.UserIterator;
 import bp.PAI_jwt.flyweight.UserFlyweight;
 import bp.PAI_jwt.mediator.FavoriteMediator;
-import bp.PAI_jwt.model.Favorite;
-import bp.PAI_jwt.model.Track;
-import bp.PAI_jwt.model.User;
+import bp.PAI_jwt.model.*;
 import bp.PAI_jwt.repository.FavoriteRepository;
 import bp.PAI_jwt.repository.TrackRepository;
 import bp.PAI_jwt.repository.UserRepository;
@@ -33,6 +31,7 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
 /*
     @GetMapping("")
     public ResponseEntity<List<User>> getAllUsers() {
@@ -60,7 +59,33 @@ public class UserController {
     }
 
  */
+    // Tydzień 8 Początek. Zasada podstawienia Liskov uzycie
+@GetMapping("")
+public ResponseEntity<List<User>> getAllUsers() {
+    try {
+        List<User> users = new ArrayList<>();
 
+        // Creating instances of User, AdminUser, and GuestUser
+        User user = new User("John", "Doe", "johndoe", "password");
+        AdminUser adminUser = new AdminUser("Admin", "User", "admin", "adminpass", "admin");
+        GuestUser guestUser = new GuestUser("Guest", "User", "guest", "guestpass", true);
+
+        // Adding instances to the list
+        users.add(user);
+        users.add(adminUser);
+        users.add(guestUser);
+
+        if (users.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    } catch (Exception e) {
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
+    // Tydzień 8 Koniec. Zasada podstawienia Liskov uzycie
+/*
     // Tydzień 4 Wzorzec Iterator Początek - Metoda zwracająca wszystkich użytkowników
     @GetMapping("")
     public ResponseEntity<List<User>> getAllUsers() {
@@ -88,6 +113,8 @@ public class UserController {
         }
     }
     // Tydzień 4 Wzorzec Iterator Koniec
+
+ */
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable("id") long id) {
         Optional<User> userData = userRepository.findById(id);

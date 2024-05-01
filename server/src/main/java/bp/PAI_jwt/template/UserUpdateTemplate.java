@@ -25,7 +25,7 @@ public class UserUpdateTemplate extends UserTemplate {
     @Override
     protected ResponseEntity<String> performOperation(User user) {
         // Pobierz istniejące imię użytkownika
-        String existingFirstName = user.getFirstName();
+        String existingFirstName = user.getFirstname();
 
         // Zaktualizuj imię użytkownika
         //user.setFirstName("NoweImie");
@@ -34,7 +34,7 @@ public class UserUpdateTemplate extends UserTemplate {
         userRepository.save(user);
 
         // Zwróć odpowiedź ResponseEntity informującą o zaktualizowanym imieniu użytkownika
-        return ResponseEntity.ok("Imię użytkownika " + user.getId() + " zostało zaktualizowane z " + existingFirstName + " na " + user.getFirstName());
+        return ResponseEntity.ok("Imię użytkownika " + user.getId() + " zostało zaktualizowane z " + existingFirstName + " na " + user.getFirstname());
     }
 }
 // Tydzień 5 Wzorzec Template Koniec

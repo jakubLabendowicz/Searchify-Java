@@ -5,7 +5,9 @@ import bp.PAI_jwt.repository.FavoriteRepository;
 import bp.PAI_jwt.repository.TrackRepository;
 import bp.PAI_jwt.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 
+@Component
 public class FavoriteContext {
     private FavoriteState currentState;
 
