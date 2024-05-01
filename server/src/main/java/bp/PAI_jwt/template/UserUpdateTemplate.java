@@ -28,8 +28,8 @@ public class UserUpdateTemplate extends UserTemplate {
         String existingFirstName = user.getFirstName();
 
         // Zaktualizuj imię użytkownika
-        user.setFirstName("NoweImie");
-
+        //user.setFirstName("NoweImie");
+        user.setFirstname("Nowe Imie");
         // Zapisz zaktualizowanego użytkownika do bazy danych
         userRepository.save(user);
 

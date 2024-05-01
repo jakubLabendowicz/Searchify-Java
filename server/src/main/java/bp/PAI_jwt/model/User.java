@@ -104,12 +104,15 @@ public class User implements Cloneable, Visitable {
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
+    
 
-    public String getFirstName() {
-        return firstName;
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
+    }
+
+    public String getFirstName() {
+        return firstName;
     }
     //Koniec, Tydzień 1, Wzorzec Prototype
 }

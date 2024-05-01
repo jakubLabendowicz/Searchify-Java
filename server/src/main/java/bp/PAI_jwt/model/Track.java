@@ -6,6 +6,7 @@ import bp.PAI_jwt.visitor.Visitor;
 
 import javax.persistence.*;
 import java.util.List;
+//Zastosowanie zasady pojedynczej odpowiedzialnosci w klasie Track
 
 @Entity
 @Table(name = "tracks")
