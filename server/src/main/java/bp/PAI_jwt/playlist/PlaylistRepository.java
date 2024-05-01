@@ -5,7 +5,8 @@ package bp.PAI_jwt.playlist;
 import java.util.HashMap;
 import java.util.Map;
 
-// Podejście sterowania danymi
+
+//Tydzień 7 Początek. Podejście sterowania danymi
 public class PlaylistRepository {
     private final Map<String, Playlist> database = new HashMap<>();
 
@@ -27,4 +28,4 @@ public class PlaylistRepository {
         return database.get(name);
     }
 }
-
+//Tydzień 7 Kopniec. Podejście sterowania danymi

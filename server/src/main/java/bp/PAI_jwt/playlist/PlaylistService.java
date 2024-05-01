@@ -2,7 +2,7 @@ package bp.PAI_jwt.playlist;
 
 import bp.PAI_jwt.model.Track;
 
-//Podejście przez Abstrakcję
+//Tydzień 7 Początek. Podejście przez Abstrakcję
 public class PlaylistService implements PlaylistOperation {
     @Override
     public void addTrack(Playlist playlist, Track track) {
@@ -14,5 +14,6 @@ public class PlaylistService implements PlaylistOperation {
         playlist.removeTrack(track);
     }
 
-    // Inne metody biznesowe związane z playlistami
+    // Inne metody biznesowe związane z playlistami...
 }
+//Tydzień 7 Koniec. Podejście przez Abstrakcję

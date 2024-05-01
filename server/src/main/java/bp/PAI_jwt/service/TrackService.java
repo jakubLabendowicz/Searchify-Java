@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+// Tydzień 7 Początek. Zastosowanie zasady pojedynczej odpowiedzialnosci w klasie Track
 public class TrackService {
     private final TrackRepository trackRepository;
 
@@ -54,3 +55,4 @@ public class TrackService {
         return trackRepository.save(newTrack);
     }
 }
+// Tydzień 7 Koniec. Zastosowanie zasady pojedynczej odpowiedzialnosci w klasie Track

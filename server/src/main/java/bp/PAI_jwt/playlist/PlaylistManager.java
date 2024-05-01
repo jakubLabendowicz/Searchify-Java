@@ -1,6 +1,6 @@
 package bp.PAI_jwt.playlist;
 
-//Podejście "Sterowanie Danymi"
+//Tydzień 7 Początek. Podejście sterowania danymi
 public class PlaylistManager {
     private final PlaylistRepository playlistRepository;
 
@@ -18,3 +18,4 @@ public class PlaylistManager {
 
     // Inne metody zarządzania playlistami
 }
+//Tydzień 7 Koniec. Podejście sterowania danymi

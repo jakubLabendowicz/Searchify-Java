@@ -6,7 +6,7 @@ import bp.PAI_jwt.visitor.Visitor;
 
 import javax.persistence.*;
 import java.util.List;
-//Zastosowanie zasady pojedynczej odpowiedzialnosci w klasie Track
+// Tydzień 7 Początek. Zastosowanie zasady pojedynczej odpowiedzialnosci w klasie Track
 
 @Entity
 @Table(name = "tracks")
@@ -155,3 +155,4 @@ public class Track implements Cloneable, Visitable {
         visitor.visit(this);
     }
 }
+// Tydzień 7 Koniec. Zastosowanie zasady pojedynczej odpowiedzialnosci w klasie Track

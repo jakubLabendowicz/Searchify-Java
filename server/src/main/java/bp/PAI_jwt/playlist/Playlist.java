@@ -5,6 +5,8 @@ package bp.PAI_jwt.playlist;
  import java.util.ArrayList;
  import java.util.List;
 
+//Tydzień 7 Początek. Podejście przez Abstrakcję
+//Tydzień 7 Początek. Podejście sterowania danymi
 public class Playlist {
     private String name;
     private List<Track> tracks;
@@ -29,3 +31,5 @@ public class Playlist {
         this.tracks.remove(track);
     }
 }
+//Tydzień 7 Koniec. Podejście przez Abstrakcję
+//Tydzień 7 Koniec. Podejście sterowania danymi
