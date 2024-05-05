@@ -2,7 +2,6 @@ package bp.PAI_jwt.interpreter;
 
 import bp.PAI_jwt.model.Favorite;
 import bp.PAI_jwt.model.Track;
-
 import java.util.ArrayList;
 import java.util.List;
 

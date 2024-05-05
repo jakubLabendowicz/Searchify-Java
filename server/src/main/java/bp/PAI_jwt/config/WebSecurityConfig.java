@@ -16,20 +16,25 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
+
     @Autowired
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
     @Autowired
     private UserDetailsService jwtUserDetailsService;
+
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
+
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration
-                                                               authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -37,31 +42,23 @@ public class WebSecurityConfig {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        // Konfiguracja menadżera AuthenticationManager tak, aby
-        // wiedział skąd załadować użytkownika w celu dopasowania
-        // danych uwierzytelniających
-        // Zastosowano haszowanie hasła za pomocą BCryptPasswordEncoder
-        auth.userDetailsService(jwtUserDetailsService)
-                .passwordEncoder(new BCryptPasswordEncoder());
+        auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // W tym przykładzie nie potrzebne jest zabezpieczenie CSRF
         http.csrf().disable()
-                // te żądania nie wymagają uwierzytelniania
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
                                 .antMatchers("/api/authenticate", "/api/register").permitAll()
-                                // pozostałe żądania wymagają uwierzytelniania
                                 .anyRequest().authenticated()
                 )
                 .exceptionHandling()
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        // Dodanie filtra do walidacji tokena przy każdym żądaniu
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

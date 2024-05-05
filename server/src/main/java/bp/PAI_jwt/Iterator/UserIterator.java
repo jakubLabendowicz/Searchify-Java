@@ -1,7 +1,6 @@
 package bp.PAI_jwt.Iterator;
 
 import bp.PAI_jwt.model.User;
-
 import java.util.Iterator;
 import java.util.List;
 

@@ -30,6 +30,5 @@ public class ErrorResponseBody implements ResponseBody<Void> {
     public int getStatusCode() {
         return statusCode;
     }
-
 }
 

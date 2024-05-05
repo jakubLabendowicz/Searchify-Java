@@ -8,4 +8,3 @@ public interface FavoriteMediator {
     ResponseEntity<Favorite> addSelfFavorite(long userId, long trackId);
 }
 //Koniec, Tydzień 5, Wzorzec Mediator
-

@@ -1,7 +1,7 @@
 package bp.PAI_jwt.memento;
+
 import bp.PAI_jwt.model.Track;
 import bp.PAI_jwt.model.User;
-
 import java.util.Optional;
 
 public class FavoriteMemento {

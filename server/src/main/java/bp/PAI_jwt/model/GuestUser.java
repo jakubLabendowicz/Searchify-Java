@@ -9,7 +9,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "guest_users")
 public class GuestUser extends User {
-
     private boolean isTemporary;
 
     public GuestUser() {

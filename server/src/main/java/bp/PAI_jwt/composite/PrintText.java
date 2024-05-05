@@ -20,5 +20,3 @@ public class PrintText implements Text {
     }
 }
 //Koniec, Tydzień 2, Wzorzec Composite
-
-

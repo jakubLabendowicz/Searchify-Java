@@ -28,17 +28,22 @@ public class UserFacade {
     @Autowired
     private JwtUserDetailsService userDetailsService;
 
+    //Tydzień 9, 4. Dostosuj funkcje tak by były tylko na jednym poziomie abstrakcji, kolejno wywoływane funkcje coraz bardziej szczegółowe (top to botom)
     public String authenticate(JwtRequest authenticationRequest) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
         } catch (DisabledException e) {
+            //Tydzień 9, 6. Dodaj zwracanie wyjątków zamiast kodów błędów (3 wystąpienia)
             throw new Exception("USER_DISABLED", e);
         } catch (BadCredentialsException e) {
+            //Tydzień 9, 6. Dodaj zwracanie wyjątków zamiast kodów błędów (3 wystąpienia)
             throw new Exception("INVALID_CREDENTIALS", e);
         }
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-        final String token = jwtTokenUtil.generateToken(userDetails);
+        authenticatePrintInfo();
+        return generateToken(authenticationRequest.getUsername());
+    }
 
+    private void authenticatePrintInfo() {
         //Tydzień 2, Wzorzec Composite
         // Kod tworzy trzy obiekty tekstowe reprezentujące nagłówek, treść główną i stopkę, a następnie tworzy obiekt drukujący, który wykorzystuje te trzy elementy tekstowe do wydruku.
         // Wykorzystanie kompozycji pozwala na elastyczne zarządzanie różnymi częściami tekstu w celu generowania i wyświetlania kompletnych komunikatów.
@@ -48,8 +53,15 @@ public class UserFacade {
         Text printText = new PrintText(headerText, mainText, footerText);
         printText.print();
         //Koniec, Tydzień 2, Wzorzec Composite
+    }
 
-        return token;
+    private String generateToken(String username) throws Exception {
+        final UserDetails userDetails = getUserDetails(username);
+        return jwtTokenUtil.generateToken(userDetails);
+    }
+
+    private UserDetails getUserDetails(String username) throws Exception {
+        return userDetailsService.loadUserByUsername(username);
     }
 
     public User register(UserDTO user) throws Exception {

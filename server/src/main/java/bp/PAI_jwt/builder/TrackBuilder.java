@@ -9,7 +9,6 @@ import java.util.List;
 // Klasa TrackBuilder służy do budowania obiektów Track.
 // Umożliwia ustawianie poszczególnych pól tracka, takich jak nazwa, artysta, identyfikator Spotify, itd.
 public class TrackBuilder {
-
     private String name;
     private List<String> artists;
     private String spotifyId;

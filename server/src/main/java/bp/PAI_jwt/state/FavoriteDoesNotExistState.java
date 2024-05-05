@@ -14,7 +14,13 @@ import java.util.Optional;
 // Stan, gdy ulubiony utwór nie istnieje
 class FavoriteDoesNotExistState implements FavoriteState {
     @Override
-    public ResponseEntity<Favorite> createFavorite(UserRepository userRepository, FavoriteRepository favoriteRepository, TrackRepository trackRepository, long userId, long trackId) {
+    public ResponseEntity<Favorite> createFavorite(FavoriteContext context) throws Exception {
+        UserRepository userRepository = context.getUserRepository();
+        FavoriteRepository favoriteRepository = context.getFavoriteRepository();
+        TrackRepository trackRepository = context.getTrackRepository();
+        long userId = context.getUserId();
+        long trackId = context.getTrackId();
+
         Optional<User> userOptional = userRepository.findById(userId);
         Optional<Track> trackOptional = trackRepository.findById(trackId);
 
@@ -25,14 +31,14 @@ class FavoriteDoesNotExistState implements FavoriteState {
             Optional<Favorite> existingFavorite = favoriteRepository.findByUserAndTrack(user, track);
 
             if (existingFavorite.isPresent()) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Favorite already exists
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // Favorite already exists
             }
 
             Favorite favorite = new Favorite(user, track);
             favoriteRepository.save(favorite);
-            return new ResponseEntity<>(favorite, HttpStatus.CREATED);
+            return ResponseEntity.status(HttpStatus.CREATED).body(favorite);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // User or Track not found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // User or Track not found
         }
     }
 }

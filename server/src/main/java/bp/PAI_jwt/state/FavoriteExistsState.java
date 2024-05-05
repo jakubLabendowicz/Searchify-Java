@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 // Stan, gdy ulubiony utwór już istnieje
 class FavoriteExistsState implements FavoriteState {
     @Override
-    public ResponseEntity<Favorite> createFavorite(UserRepository userRepository, FavoriteRepository favoriteRepository, TrackRepository trackRepository, long userId, long trackId) {
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Favorite already exists
+    public ResponseEntity<Favorite> createFavorite(FavoriteContext context) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // Favorite already exists
     }
 }

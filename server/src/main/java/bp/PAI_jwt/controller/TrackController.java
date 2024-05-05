@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import bp.PAI_jwt.bridge.BasicTrackOperations;
 import bp.PAI_jwt.bridge.ExtendedTrackOperations;
 import bp.PAI_jwt.bridge.TrackOperations;
 import bp.PAI_jwt.builder.TrackBuilder;
@@ -19,7 +17,6 @@ import bp.PAI_jwt.interpreter.NameExpression;
 import bp.PAI_jwt.model.Favorite;
 import bp.PAI_jwt.model.Track;
 import bp.PAI_jwt.model.User;
-import bp.PAI_jwt.proxy.TrackProxy;
 import bp.PAI_jwt.repository.FavoriteRepository;
 import bp.PAI_jwt.repository.TrackRepository;
 import bp.PAI_jwt.repository.UserRepository;
@@ -37,7 +34,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
 
 @RestController
 @CrossOrigin
@@ -90,32 +86,38 @@ public class TrackController {
     }
     //Tydzień 2. Wzorzec Bridge Koniec
 
+    //Tydzień 9, 2. Dostosuj długości metod w programie, żeby nie miały więcej niż 20 linii
+    //Tydzień 9, 3. Dostosuj funkcje tak by spełniały tylko jedną rolę
     @GetMapping("")
     public ResponseEntity<List<TrackDTO>> getAllTracks(@RequestParam(required = false) String name) {
         try {
-            List<Track> tracks = new ArrayList<>();
-
-            if (name == null)
-                trackRepository.findAll().forEach(tracks::add);
-            else
-                trackRepository.findByNameContaining(name).forEach(tracks::add);
-
+            List<Track> tracks = retrieveTracks(name);
             if (tracks.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
 
-            // Get the currently authenticated username
             String currentUsername = getCurrentUsername();
-
-            // Convert Track entities to TrackDTOs with the 'favorite' field
-            List<TrackDTO> trackDTOs = tracks.stream()
-                    .map(track -> new TrackDTO(track, isFavoriteForUser(track, currentUsername)))
-                    .collect(Collectors.toList());
+            List<TrackDTO> trackDTOs = convertToTrackDTOs(tracks, currentUsername);
 
             return new ResponseEntity<>(trackDTOs, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new RuntimeException("Failed to retrieve tracks", e);
         }
+    }
+
+    private List<Track> retrieveTracks(String name) {
+        List<Track> tracks = new ArrayList<>();
+        if (name == null)
+            trackRepository.findAll().forEach(tracks::add);
+        else
+            trackRepository.findByNameContaining(name).forEach(tracks::add);
+        return tracks;
+    }
+
+    private List<TrackDTO> convertToTrackDTOs(List<Track> tracks, String currentUsername) {
+        return tracks.stream()
+                .map(track -> new TrackDTO(track, isFavoriteForUser(track, currentUsername)))
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
@@ -131,103 +133,130 @@ public class TrackController {
             // Wyświetl informacje o kategorii
             String infoWithCategory = categoryDecorator.displayInfo();
 
+            //Tydzień 2. Wzorzec Decorator Koniec
+
             return new ResponseEntity<>(infoWithCategory, HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Track not found", HttpStatus.NOT_FOUND);
         }
     }
-//Tydzień 2. Wzorzec Decorator Koniec
 
-
+    //Tydzień 9, 2. Dostosuj długości metod w programie, żeby nie miały więcej niż 20 linii
+    //Tydzień 9, 3. Dostosuj funkcje tak by spełniały tylko jedną rolę
     @PostMapping("")
-    public ResponseEntity<ResponseBody> createTrack(@RequestBody Track track) {
+    public ResponseEntity<ResponseBody> createTrack(@RequestBody Track incomingTrack) {
         try {
-            // Sprawdzamy, czy popularity można przekształcić na float
-            try {
-                if(track.getPopularity() != null) Float.parseFloat(track.getPopularity());
-            } catch (NumberFormatException e) {
-//                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-                return new ResponseEntity<>(
-                        responseFactory.createErrorResponse("Zła wartość: Popularity", 400),
-                        HttpStatus.BAD_REQUEST
-                );
-            }
+            validateTrackPopularityAndDuration(incomingTrack);
 
-            // Sprawdzamy, czy durationMs można przekształcić na float
-            try {
-                if(track.getDurationMs() != null) Float.parseFloat(track.getDurationMs());
-            } catch (NumberFormatException e) {
-//                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-                return new ResponseEntity<>(
-                        responseFactory.createErrorResponse("Zła wartość: Duration", 400),
-                        HttpStatus.BAD_REQUEST
-                );
-            }
+            Track newTrack = buildTrackFromRequest(incomingTrack);
+            Track savedTrack = saveTrackToRepository(newTrack);
 
-            //Tydzień 1, Wzorzec Builder
-            // Klasa TrackBuilder służy do budowania obiektów Track.
-            // Umożliwia ustawianie poszczególnych pól tracka, takich jak nazwa, artysta, identyfikator Spotify, itd.
-            Track newTrack = new TrackBuilder()
-                    .setName(track.getName())
-                    .setArtist(track.getArtists())
-                    .setSpotifyId(track.getSpotifyId())
-                    .setPreviewUrl(track.getPreviewUrl())
-                    .setPopularity(track.getPopularity())
-                    .setDurationMs(track.getDurationMs())
-                    .setImage(track.getImage())
-                    .build();
-            //Koniec, Tydzień 1, Wzorzec Builder
-
-            Track _track = trackRepository.save((Track) newTrack.clone());
-
-            return new ResponseEntity<ResponseBody>(
-                    //Tydzień 1, Wzorzec Factory
-                    //Ten kod implementuje wzorzec projektowy fabryki dla generowania odpowiedzi API.
-                    //Dostępne są dwa typy odpowiedzi: SuccessResponseBody (z danymi) i ErrorResponseBody (z komunikatem o błędzie).
-                    responseFactory.createSuccessResponse(_track, "Dane zostały pomyślnie zapisane", 201),
-                    //Koniec, Tydzień 1, Wzorzec Factory
-                    HttpStatus.CREATED
-            );
+            ResponseBody successResponse = createSuccessResponse(savedTrack);
+            return ResponseEntity.status(HttpStatus.CREATED).body(successResponse);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid popularity or duration format", e);
         } catch (Exception e) {
-            return new ResponseEntity<>(
-                    responseFactory.createErrorResponse("Wystąpił błąd", 500),
-                    HttpStatus.INTERNAL_SERVER_ERROR
-            );
+            throw new RuntimeException("Failed to create track", e);
         }
     }
 
+    private void validateTrackPopularityAndDuration(Track track) {
+        validateNumericField(track.getPopularity(), "Popularity");
+        validateNumericField(track.getDurationMs(), "Duration");
+    }
 
+    private void validateNumericField(String value, String fieldName) {
+        if (value != null) {
+            try {
+                Float.parseFloat(value);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Invalid value for " + fieldName, e);
+            }
+        }
+    }
+
+    private Track buildTrackFromRequest(Track incomingTrack) {
+        //Tydzień 1, Wzorzec Builder
+        // Klasa TrackBuilder służy do budowania obiektów Track.
+        // Umożliwia ustawianie poszczególnych pól tracka, takich jak nazwa, artysta, identyfikator Spotify, itd.
+        return new TrackBuilder()
+                .setName(incomingTrack.getName())
+                .setArtist(incomingTrack.getArtists())
+                .setSpotifyId(incomingTrack.getSpotifyId())
+                .setPreviewUrl(incomingTrack.getPreviewUrl())
+                .setPopularity(incomingTrack.getPopularity())
+                .setDurationMs(incomingTrack.getDurationMs())
+                .setImage(incomingTrack.getImage())
+                .build();
+        //Koniec, Tydzień 1, Wzorzec Builder
+    }
+
+    private Track saveTrackToRepository(Track track) {
+        return trackRepository.save((Track) track.clone());
+    }
+
+    private ResponseBody createSuccessResponse(Track track) {
+        //Tydzień 1, Wzorzec Factory
+        //Ten kod implementuje wzorzec projektowy fabryki dla generowania odpowiedzi API.
+        //Dostępne są dwa typy odpowiedzi: SuccessResponseBody (z danymi) i ErrorResponseBody (z komunikatem o błędzie).
+        return responseFactory.createSuccessResponse(
+                track,
+                "Track successfully created",
+                HttpStatus.CREATED.value()
+        );
+        //Koniec, Tydzień 1, Wzorzec Factory
+    }
+
+    //Tydzień 9, 2. Dostosuj długości metod w programie, żeby nie miały więcej niż 20 linii
+    //Tydzień 9, 3. Dostosuj funkcje tak by spełniały tylko jedną rolę
     @PutMapping("/{id}")
     public ResponseEntity<Track> updateTrack(@PathVariable("id") long id, @RequestBody Track track) {
-        // Sprawdzamy, czy popularity można przekształcić na float
         try {
-            if(track.getPopularity() != null) Float.parseFloat(track.getPopularity());
+            validatePopularity(track);
+            validateDurationMs(track);
+
+            Optional<Track> trackData = trackRepository.findById(id);
+
+            if (trackData.isPresent()) {
+                Track updatedTrack = updateTrackData(trackData.get(), track);
+                return new ResponseEntity<>(trackRepository.save(updatedTrack), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
         } catch (NumberFormatException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return handleNumberFormatException();
+        } catch (Exception e) {
+            return handleInternalServerError();
         }
+    }
 
-        // Sprawdzamy, czy durationMs można przekształcić na float
-        try {
-            if(track.getDurationMs() != null) Float.parseFloat(track.getDurationMs());
-        } catch (NumberFormatException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+    private Track updateTrackData(Track existingTrack, Track newTrackData) {
+        existingTrack.setName(newTrackData.getName());
+        existingTrack.setArtists(newTrackData.getArtists());
+        existingTrack.setSpotifyId(newTrackData.getSpotifyId());
+        existingTrack.setPreviewUrl(newTrackData.getPreviewUrl());
+        existingTrack.setPopularity(newTrackData.getPopularity());
+        existingTrack.setDurationMs(newTrackData.getDurationMs());
+        existingTrack.setImage(newTrackData.getImage());
+        return existingTrack;
+    }
 
-        Optional<Track> trackData = trackRepository.findById(id);
+    private ResponseEntity<Track> handleNumberFormatException() {
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    }
 
-        if (trackData.isPresent()) {
-            Track _track = trackData.get();
-            _track.setName(track.getName());
-            _track.setArtists(track.getArtists());
-            _track.setSpotifyId(track.getSpotifyId());
-            _track.setPreviewUrl(track.getPreviewUrl());
-            _track.setPopularity(track.getPopularity());
-            _track.setDurationMs(track.getDurationMs());
-            _track.setImage(track.getImage());
-            return new ResponseEntity<>(trackRepository.save(_track), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    private ResponseEntity<Track> handleInternalServerError() {
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private void validatePopularity(Track track) {
+        if (track.getPopularity() != null)
+            Float.parseFloat(track.getPopularity());
+    }
+
+    private void validateDurationMs(Track track) {
+        if (track.getDurationMs() != null)
+            Float.parseFloat(track.getDurationMs());
     }
 
     @DeleteMapping("/{id}")

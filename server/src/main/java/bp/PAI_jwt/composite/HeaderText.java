@@ -18,4 +18,3 @@ public class HeaderText extends BaseText {
     }
 }
 //Koniec, Tydzień 2, Wzorzec Composite
-

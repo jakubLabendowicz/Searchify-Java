@@ -2,11 +2,10 @@ package bp.PAI_jwt.template;
 
 import bp.PAI_jwt.model.User;
 import org.springframework.http.ResponseEntity;
-
 import java.util.Optional;
+
 // Tydzień 5 Wzorzec Template Początek
 // UserTemplate definiuje ogólny szkielet algorytmu operacji na użytkownikach
-
 public abstract class UserTemplate {
 
     protected abstract Optional<User> getUserById(long userId);
@@ -24,5 +23,4 @@ public abstract class UserTemplate {
         }
     }
 }
-
 // Tydzień 5 Wzorzec Template Koniec

@@ -13,35 +13,43 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
-    private final UserRepository userDao;
+    private final UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public JwtUserDetailsService(UserRepository userDao) {
-        this.userDao = userDao;
+        this.userRepository = userDao;
     }
 
-    @Autowired
-    private PasswordEncoder bcryptEncoder;
     @Override
-    public UserDetails loadUserByUsername(String username)
-            throws UsernameNotFoundException {
-        User user = userDao.findByUsername(username);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username);
         if (user == null) {
-            throw new
-                    UsernameNotFoundException("User not found with username: " +
-                    username);
+            //Tydzień 9, 6. Dodaj zwracanie wyjątków zamiast kodów błędów (3 wystąpienia)
+            throw new UsernameNotFoundException("User not found with username: " + username);
         }
         return new org.springframework.security.core.userdetails.User(
-                user.getUsername(), user.getPassword(),new ArrayList<>());
+                user.getUsername(), user.getPassword(), new ArrayList<>());
     }
+
     public User save(UserDTO userDTO) {
+        User user = convertUserDTOToUser(userDTO);
+        encodeUserPassword(user);
+        return userRepository.save(user);
+    }
+
+    private User convertUserDTOToUser(UserDTO userDTO) {
         //Tydzień 2, Wzorzec Adapter
         // Metoda `save()` przyjmuje obiekt `UserDTO`, który jest konwertowany na obiekt typu `User` za pomocą klasy `UserDTOAdapter`, wykorzystującej wzorzec adaptera.
         // Następnie hasło użytkownika jest szyfrowane i zapisywane w bazie danych przy użyciu interfejsu DAO (Data Access Object).
         UserDTOAdapter userDTOAdapter = new UserDTOAdapter(userDTO);
-        User user = (User) userDTOAdapter.clone();
+        return (User) userDTOAdapter.clone();
         //Koniec, Tydzień 2, Wzorzec Adapter
-        user.setPassword(bcryptEncoder.encode(user.getPassword()));
-        return userDao.save(user);
+    }
+
+    private void encodeUserPassword(User user) {
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
     }
 }

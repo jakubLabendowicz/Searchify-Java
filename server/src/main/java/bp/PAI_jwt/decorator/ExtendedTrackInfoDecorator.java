@@ -15,6 +15,5 @@ public class ExtendedTrackInfoDecorator extends TrackDecorator {
         // Zwróć informacje o utworze wraz z dodatkowymi informacjami
         return decoratedTrack.toString() + " \n Additional Info: " + additionalInfo;
     }
-
 }
 //Tydzień 2. Wzorzec Decorator Koniec

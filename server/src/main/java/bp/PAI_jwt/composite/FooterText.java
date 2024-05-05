@@ -18,4 +18,3 @@ public class FooterText extends BaseText {
     }
 }
 //Koniec, Tydzień 2, Wzorzec Composite
-

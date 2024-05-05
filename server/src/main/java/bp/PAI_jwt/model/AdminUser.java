@@ -7,7 +7,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "admin_users")
 public class AdminUser extends User {
-
     private String role;
 
     public AdminUser() {

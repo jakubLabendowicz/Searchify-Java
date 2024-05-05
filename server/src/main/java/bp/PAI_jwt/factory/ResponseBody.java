@@ -9,6 +9,5 @@ public interface ResponseBody<T> {
     String getType();
 
     int getStatusCode();
-
 }
 

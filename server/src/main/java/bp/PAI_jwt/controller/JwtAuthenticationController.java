@@ -28,22 +28,14 @@ public class JwtAuthenticationController {
 
     private UserManager userManager = new UserManager();
 
+    //Tydzień 9, 4. Dostosuj funkcje tak by były tylko na jednym poziomie abstrakcji, kolejno wywoływane funkcje coraz bardziej szczegółowe (top to botom)
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
         // Tydzień 4, Wzorzec Facade
         String token = userFacade.authenticate(authenticationRequest);
         ResponseEntity<?> responseEntity = ResponseEntity.ok(new JwtResponse(token));
         //Koniec, Tydzień 4, Wzorzec Facade
-
-
-        // Tydzień 6, Wzorzec Observer
-        // Kod dodaje instancję `LoggingUserObserver` do `UserManager` jako obserwatora, następnie pobiera użytkownika na podstawie nazwy użytkownika przekazanej przez żądanie uwierzytelnienia i powiadamia `UserManager` o zalogowaniu użytkownika, co aktywuje powiadomienie dla wszystkich zarejestrowanych obserwatorów.
-        // Kod ten demonstruje praktyczne zastosowanie wzorca Observer w systemie logowania użytkowników.
-        userManager.addObserver(new LoggingUserObserver());
-        User user = userRepository.findByUsername(authenticationRequest.getUsername());
-        userManager.notifyObservers(user);
-        //Koniec, Tydzień 6, Wzorzec Observer
-
+        addAuthenticateObserver(authenticationRequest);
         return responseEntity;
     }
 
@@ -52,5 +44,15 @@ public class JwtAuthenticationController {
         // Tydzień 4, Wzorzec Facade
         return ResponseEntity.ok(userFacade.register(user));
         //Koniec, Tydzień 4, Wzorzec Facade
+    }
+
+    private void addAuthenticateObserver(JwtRequest authenticationRequest) {
+        // Tydzień 6, Wzorzec Observer
+        // Kod dodaje instancję `LoggingUserObserver` do `UserManager` jako obserwatora, następnie pobiera użytkownika na podstawie nazwy użytkownika przekazanej przez żądanie uwierzytelnienia i powiadamia `UserManager` o zalogowaniu użytkownika, co aktywuje powiadomienie dla wszystkich zarejestrowanych obserwatorów.
+        // Kod ten demonstruje praktyczne zastosowanie wzorca Observer w systemie logowania użytkowników.
+        userManager.addObserver(new LoggingUserObserver());
+        User user = userRepository.findByUsername(authenticationRequest.getUsername());
+        userManager.notifyObservers(user);
+        //Koniec, Tydzień 6, Wzorzec Observer
     }
 }

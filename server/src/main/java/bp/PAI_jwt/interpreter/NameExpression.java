@@ -1,7 +1,6 @@
 package bp.PAI_jwt.interpreter;
 
 import bp.PAI_jwt.model.Track;
-
 import java.util.List;
 
 // Tydzień 5, Wzorzec Interpreter
@@ -18,4 +17,3 @@ public class NameExpression implements Expression {
     }
 }
 //Koniec, Tydzień 5, Wzorzec Interpreter
-

@@ -1,7 +1,6 @@
 package bp.PAI_jwt.factory;
 
 public class SuccessResponseBody<T> implements ResponseBody<T> {
-
     private T data;
     private String message;
     private String type = "success";

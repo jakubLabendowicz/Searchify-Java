@@ -3,8 +3,6 @@ package bp.PAI_jwt.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import bp.PAI_jwt.Iterator.UserIterator;
 import bp.PAI_jwt.flyweight.UserFlyweight;
 import bp.PAI_jwt.mediator.FavoriteMediator;
 import bp.PAI_jwt.model.*;
@@ -14,9 +12,6 @@ import bp.PAI_jwt.repository.UserRepository;
 import bp.PAI_jwt.state.FavoriteContext;
 import bp.PAI_jwt.template.UserTemplate;
 import bp.PAI_jwt.template.UserUpdateTemplate;
-import bp.PAI_jwt.repository.UserRepository;  // Make sure to import the appropriate repository
-import bp.PAI_jwt.visitor.ElementVisitor;
-import bp.PAI_jwt.visitor.Visitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,6 +54,7 @@ public class UserController {
     }
 
  */
+
     // Tydzień 8 Początek. Zasada podstawienia Liskov uzycie
 @GetMapping("")
 public ResponseEntity<List<User>> getAllUsers() {
@@ -85,6 +81,7 @@ public ResponseEntity<List<User>> getAllUsers() {
     }
 }
     // Tydzień 8 Koniec. Zasada podstawienia Liskov uzycie
+
 /*
     // Tydzień 4 Wzorzec Iterator Początek - Metoda zwracająca wszystkich użytkowników
     @GetMapping("")
@@ -113,7 +110,6 @@ public ResponseEntity<List<User>> getAllUsers() {
         }
     }
     // Tydzień 4 Wzorzec Iterator Koniec
-
  */
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable("id") long id) {
@@ -259,36 +255,11 @@ public ResponseEntity<List<User>> getAllUsers() {
     private FavoriteContext favoriteContext;
 
     @PostMapping("/{userId}/favorites/{trackId}")
-    public ResponseEntity<Favorite> createFavorite(@PathVariable long userId, @PathVariable long trackId) {
-        return favoriteContext.createFavorite(userRepository, favoriteRepository, trackRepository, userId, trackId);
+    public ResponseEntity<Favorite> createFavorite(@PathVariable long userId, @PathVariable long trackId) throws Exception {
+        favoriteContext.setContext(userRepository, favoriteRepository, trackRepository, userId, trackId);
+        return favoriteContext.createFavorite();
     }
-
     // Tydzień 5 Wzorzec State Koniec
-
-/*
-    @PostMapping("/{userId}/favorites/{trackId}")
-    public ResponseEntity<Favorite> createFavorite(@PathVariable long userId, @PathVariable long trackId) {
-        Optional<User> userOptional = userRepository.findById(userId);
-        Optional<Track> trackOptional = trackRepository.findById(trackId);
-
-        if (userOptional.isPresent() && trackOptional.isPresent()) {
-            User user = userOptional.get();
-            Track track = trackOptional.get();
-
-            Optional<Favorite> existingFavorite = favoriteRepository.findByUserAndTrack(user, track);
-
-            if (existingFavorite.isPresent()) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Favorite already exists
-            }
-
-            Favorite favorite = new Favorite(user, track);
-            favoriteRepository.save(favorite);
-            return new ResponseEntity<>(favorite, HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // User or Track not found
-        }
-    }
-*/
 
     // Tydzień 5 Wzorzec Template Początek
     private final UserTemplate userTemplate;
@@ -323,32 +294,6 @@ public ResponseEntity<List<User>> getAllUsers() {
         }
     }
 
-//    @PostMapping("/self/favorites/{trackId}")
-//    public ResponseEntity<Favorite> addSelfFavorite(@PathVariable long trackId) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String username = authentication.getName();
-//
-//        Optional<User> userOptional = Optional.ofNullable(userRepository.findByUsername(username));
-//        Optional<Track> trackOptional = trackRepository.findById(trackId);
-//
-//        if (userOptional.isPresent() && trackOptional.isPresent()) {
-//            User user = userOptional.get();
-//            Track track = trackOptional.get();
-//
-//            Optional<Favorite> existingFavorite = favoriteRepository.findByUserAndTrack(user, track);
-//
-//            if (existingFavorite.isPresent()) {
-//                return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Favorite already exists
-//            }
-//
-//            Favorite favorite = new Favorite(user, track);
-//            favoriteRepository.save(favorite);
-//            return new ResponseEntity<>(favorite, HttpStatus.CREATED);
-//        } else {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // User or Track not found
-//        }
-//    }
-
     @GetMapping("/{userId}/favorites")
     public ResponseEntity<List<Favorite>> getFavoritesByUser(@PathVariable long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
@@ -377,7 +322,6 @@ public ResponseEntity<List<User>> getAllUsers() {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND); // User not found
         }
     }
-
 
     @DeleteMapping("/{userId}/favorites/{trackId}")
     public ResponseEntity<HttpStatus> deleteFavorite(@PathVariable long userId, @PathVariable long trackId) {
@@ -425,6 +369,5 @@ public ResponseEntity<List<User>> getAllUsers() {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND); // User or Track not found
         }
     }
-
 }
 

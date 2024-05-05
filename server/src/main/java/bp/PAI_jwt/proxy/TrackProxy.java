@@ -16,13 +16,23 @@ public class TrackProxy implements TrackOperations {
 
     @Override
     public String getBasicInfo() {
-        // Pobierz informacje o utworze tylko wtedy, gdy są one potrzebne i nie są jeszcze zcache'owane
         if (cachedTrack == null) {
-            cachedTrack = externalTrackService.getTrackById(trackId);
+            cachedTrack = fetchTrackById(trackId);
         }
+        return buildBasicInfo(cachedTrack);
+    }
 
-        // Zwróć podstawowe informacje o utworze
-        return "Basic Info: " + cachedTrack.getName() + " by " + cachedTrack.getArtists();
+    private Track fetchTrackById(long trackId) {
+        try {
+            return externalTrackService.getTrackById(trackId);
+        } catch (Exception e) {
+            //Tydzień 9, 6. Dodaj zwracanie wyjątków zamiast kodów błędów (3 wystąpienia)
+            throw new RuntimeException("Failed to fetch track by id: " + trackId, e);
+        }
+    }
+
+    private String buildBasicInfo(Track track) {
+        return "Basic Info: " + track.getName() + " by " + track.getArtists();
     }
 }
 // Tydzień 4 Wzorzec Proxy Koniec

@@ -1,6 +1,5 @@
 package bp.PAI_jwt.mediator;
 
-import bp.PAI_jwt.controller.TrackController;
 import bp.PAI_jwt.model.Favorite;
 import bp.PAI_jwt.model.Track;
 import bp.PAI_jwt.model.User;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-
 import java.util.Optional;
 
 // Tydzień 5, Wzorzec Mediator
@@ -36,18 +34,20 @@ public class FavoriteMediatorImpl implements FavoriteMediator {
             User user = userOptional.get();
             Track track = trackOptional.get();
 
-            Optional<Favorite> existingFavorite = favoriteRepository.findByUserAndTrack(user, track);
-
-            if (existingFavorite.isPresent()) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Favorite already exists
+            if (favoriteAlreadyExists(user, track)) {
+                return ResponseEntity.badRequest().build();
             }
 
             Favorite favorite = new Favorite(user, track);
             favoriteRepository.save(favorite);
-            return new ResponseEntity<>(favorite, HttpStatus.CREATED);
+            return ResponseEntity.status(HttpStatus.CREATED).body(favorite);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // User or Track not found
+            return ResponseEntity.notFound().build();
         }
+    }
+
+    private boolean favoriteAlreadyExists(User user, Track track) {
+        return favoriteRepository.findByUserAndTrack(user, track).isPresent();
     }
 }
 //Koniec, Tydzień 5, Wzorzec Mediator

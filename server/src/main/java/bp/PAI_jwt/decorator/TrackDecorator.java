@@ -5,11 +5,9 @@ import bp.PAI_jwt.model.Track;
 // wyswietlenia informacji o utworze, nie modyfikujac przy tym metod w klasie bazowej
 public abstract class TrackDecorator implements Cloneable {
     protected Track decoratedTrack;
-
     public TrackDecorator(Track decoratedTrack) {
         this.decoratedTrack = decoratedTrack;
     }
-
     public abstract String displayInfo();
 
     @Override

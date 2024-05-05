@@ -18,4 +18,3 @@ public class ElementVisitor implements Visitor {
     }
 }
 //Koniec, Tydzień 6, Wzorzec Visitor
-

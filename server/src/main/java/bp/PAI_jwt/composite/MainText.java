@@ -17,4 +17,3 @@ public class MainText extends BaseText {
     }
 }
 //Koniec, Tydzień 2, Wzorzec Composite
-

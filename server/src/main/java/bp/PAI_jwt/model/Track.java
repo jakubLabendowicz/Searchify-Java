@@ -11,7 +11,6 @@ import java.util.List;
 @Entity
 @Table(name = "tracks")
 public class Track implements Cloneable, Visitable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

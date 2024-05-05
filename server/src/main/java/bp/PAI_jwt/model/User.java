@@ -12,7 +12,6 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 public class User implements Cloneable, Visitable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

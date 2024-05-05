@@ -13,7 +13,5 @@ public class PlaylistService implements PlaylistOperation {
     public void removeTrack(Playlist playlist, Track track) {
         playlist.removeTrack(track);
     }
-
-    // Inne metody biznesowe związane z playlistami...
 }
 //Tydzień 7 Koniec. Podejście przez Abstrakcję

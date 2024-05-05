@@ -13,4 +13,3 @@ abstract class BaseText implements Text {
     }
 }
 //Koniec, Tydzień 2, Wzorzec Composite
-

@@ -11,4 +11,3 @@ public interface Visitor {
     void visit(Track track);
 }
 //Koniec, Tydzień 6, Wzorzec Visitor
-
