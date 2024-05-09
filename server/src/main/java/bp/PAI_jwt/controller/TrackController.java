@@ -11,6 +11,9 @@ import bp.PAI_jwt.command.BasicTrackInfoCommand;
 import bp.PAI_jwt.command.TrackCommand;
 import bp.PAI_jwt.decorator.CategoryTrackDecorator;
 import bp.PAI_jwt.decorator.TrackDecorator;
+import bp.PAI_jwt.functionalInterfaces.NumberValidator;
+import bp.PAI_jwt.functionalInterfaces.TrackDeleter;
+import bp.PAI_jwt.functionalInterfaces.UserCreator;
 import bp.PAI_jwt.interpreter.Context;
 import bp.PAI_jwt.interpreter.Expression;
 import bp.PAI_jwt.interpreter.NameExpression;
@@ -212,8 +215,20 @@ public class TrackController {
     @PutMapping("/{id}")
     public ResponseEntity<Track> updateTrack(@PathVariable("id") long id, @RequestBody Track track) {
         try {
-            validatePopularity(track);
-            validateDurationMs(track);
+            // Tydzień 10, utwórz 3 interfejsy funkcyjne, wykonaj ich implementacje i napisz kod używający instancji tych interfejsów poprzez zastosowanie wyrażenia lambda
+            NumberValidator popularityValidator = value -> {
+                if (value != null)
+                    Float.parseFloat(value);
+            };
+
+            NumberValidator durationValidator = value -> {
+                if (value != null)
+                    Float.parseFloat(value);
+            };
+
+            validateAttribute(track.getPopularity(), popularityValidator);
+            validateAttribute(track.getDurationMs(), durationValidator);
+            //Koniec, Tydzień 10, utwórz 3 interfejsy funkcyjne, wykonaj ich implementacje i napisz kod używający instancji tych interfejsów poprzez zastosowanie wyrażenia lambda
 
             Optional<Track> trackData = trackRepository.findById(id);
 
@@ -227,6 +242,14 @@ public class TrackController {
             return handleNumberFormatException();
         } catch (Exception e) {
             return handleInternalServerError();
+        }
+    }
+
+    private void validateAttribute(String value, NumberValidator validator) {
+        try {
+            validator.validate(value);
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("Invalid number format: " + value);
         }
     }
 
@@ -262,7 +285,11 @@ public class TrackController {
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteTrack(@PathVariable("id") long id) {
         try {
-            trackRepository.deleteById(id);
+            // Tydzień 10, utwórz 3 interfejsy funkcyjne, wykonaj ich implementacje i napisz kod używający instancji tych interfejsów poprzez zastosowanie wyrażenia lambda
+            TrackDeleter trackDeleter = (trackId) -> trackRepository.deleteById(trackId);
+            trackDeleter.deleteTrack(id);
+            //Koniec, Tydzień 10, utwórz 3 interfejsy funkcyjne, wykonaj ich implementacje i napisz kod używający instancji tych interfejsów poprzez zastosowanie wyrażenia lambda
+
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

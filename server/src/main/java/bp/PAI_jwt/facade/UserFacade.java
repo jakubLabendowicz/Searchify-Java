@@ -3,6 +3,7 @@ package bp.PAI_jwt.facade;
 import bp.PAI_jwt.composite.*;
 import bp.PAI_jwt.config.JwtTokenUtil;
 import bp.PAI_jwt.dto.UserDTO;
+import bp.PAI_jwt.functionalInterfaces.UserCreator;
 import bp.PAI_jwt.model.JwtRequest;
 import bp.PAI_jwt.model.User;
 import bp.PAI_jwt.service.JwtUserDetailsService;
@@ -65,7 +66,10 @@ public class UserFacade {
     }
 
     public User register(UserDTO user) throws Exception {
-        return userDetailsService.save(user);
+        // Tydzień 10, utwórz 3 interfejsy funkcyjne, wykonaj ich implementacje i napisz kod używający instancji tych interfejsów poprzez zastosowanie wyrażenia lambda
+        UserCreator userCreator = (userDTO) -> userDetailsService.save(userDTO);
+        return userCreator.createUser(user);
+        //Koniec, Tydzień 10, utwórz 3 interfejsy funkcyjne, wykonaj ich implementacje i napisz kod używający instancji tych interfejsów poprzez zastosowanie wyrażenia lambda
     }
 }
 //Koniec, Tydzień 4, Wzorzec Facade

@@ -1,6 +1,7 @@
 package bp.PAI_jwt.service;
 
 import bp.PAI_jwt.adapter.UserDTOAdapter;
+import bp.PAI_jwt.functionalInterfaces.UserCreator;
 import bp.PAI_jwt.model.User;
 import bp.PAI_jwt.dto.UserDTO;
 import bp.PAI_jwt.repository.UserRepository;
