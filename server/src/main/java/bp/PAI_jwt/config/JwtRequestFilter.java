@@ -26,30 +26,34 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        final String requestTokenHeader = request.getHeader("Authorization");
-        String username = null;
-        String jwtToken = null;
+        try {
+            final String requestTokenHeader = request.getHeader("Authorization");
+            String username = null;
+            String jwtToken = null;
 
-        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
-            jwtToken = requestTokenHeader.substring(7);
-            try {
-                username = jwtTokenUtil.getUsernameFromToken(jwtToken);
-            } catch (IllegalArgumentException e) {
+            if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
+                jwtToken = requestTokenHeader.substring(7);
+                try {
+                    username = jwtTokenUtil.getUsernameFromToken(jwtToken);
+                } catch (IllegalArgumentException e) {
+                    //Tydzień 9, 6. Dodaj zwracanie wyjątków zamiast kodów błędów (3 wystąpienia)
+                    throw new ServletException("Unable to get JWT Token", e);
+                } catch (ExpiredJwtException e) {
+                    //Tydzień 9, 6. Dodaj zwracanie wyjątków zamiast kodów błędów (3 wystąpienia)
+                    throw new ServletException("JWT Token has expired", e);
+                }
+            } else {
                 //Tydzień 9, 6. Dodaj zwracanie wyjątków zamiast kodów błędów (3 wystąpienia)
-                throw new ServletException("Unable to get JWT Token", e);
-            } catch (ExpiredJwtException e) {
-                //Tydzień 9, 6. Dodaj zwracanie wyjątków zamiast kodów błędów (3 wystąpienia)
-                throw new ServletException("JWT Token has expired", e);
+                throw new ServletException("JWT Token does not begin with Bearer String");
             }
-        } else {
-            //Tydzień 9, 6. Dodaj zwracanie wyjątków zamiast kodów błędów (3 wystąpienia)
-            throw new ServletException("JWT Token does not begin with Bearer String");
-        }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            authenticateUser(request, jwtToken, username);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                authenticateUser(request, jwtToken, username);
+            }
+            chain.doFilter(request, response);
+        } catch (Exception e) {
+            System.out.println(e);
         }
-        chain.doFilter(request, response);
     }
 
     //Tydzień 9, 1. Znaczące (jasne i zrozumiałe) nazwy do klas, metod i zmiennych, znaczące w całym programie to samo (bez synonimów)
