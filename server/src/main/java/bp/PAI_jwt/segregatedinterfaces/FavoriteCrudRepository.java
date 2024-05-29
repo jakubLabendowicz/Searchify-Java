@@ -1,13 +1,21 @@
 package bp.PAI_jwt.segregatedinterfaces;
 
 import bp.PAI_jwt.model.Favorite;
-//Tydzień 8 Początek. Segregacja interfejsów
-public interface FavoriteCrudRepository {
+import bp.PAI_jwt.model.Track;
+import bp.PAI_jwt.model.User;
+
+import java.util.List;
+
+public interface FavoriteCrudRepository extends CrudRepository<Favorite> {
     void save(Favorite favorite);
 
     Favorite findById(Long id);
 
     void deleteById(Long id);
+
+    long count();
+
+    List<Favorite> findByName(String name);
 }
 
-//Tydzień 8 Konieck. Segregacja interfejsów
+

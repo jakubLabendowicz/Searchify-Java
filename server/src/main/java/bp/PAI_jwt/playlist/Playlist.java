@@ -29,6 +29,13 @@ public class Playlist {
     public void removeTrack(Track track) {
         this.tracks.remove(track);
     }
+    @Override
+    public String toString() {
+        return "Playlist{" +
+                "name='" + name + '\'' +
+                ", tracks=" + tracks +
+                '}';
+    }
 }
 //Tydzień 7 Koniec. Podejście przez Abstrakcję
 //Tydzień 7 Koniec. Podejście sterowania danymi

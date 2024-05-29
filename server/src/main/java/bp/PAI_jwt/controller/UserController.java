@@ -6,9 +6,7 @@ import java.util.Optional;
 import bp.PAI_jwt.flyweight.UserFlyweight;
 import bp.PAI_jwt.mediator.FavoriteMediator;
 import bp.PAI_jwt.model.*;
-import bp.PAI_jwt.repository.FavoriteRepository;
-import bp.PAI_jwt.repository.TrackRepository;
-import bp.PAI_jwt.repository.UserRepository;
+import bp.PAI_jwt.repository.*;
 import bp.PAI_jwt.state.FavoriteContext;
 import bp.PAI_jwt.template.UserTemplate;
 import bp.PAI_jwt.template.UserUpdateTemplate;
@@ -245,8 +243,9 @@ public ResponseEntity<List<User>> getAllUsers() {
 */
 
     // Tydzień 5 Wzorzec State Początek
+
     @Autowired
-    private FavoriteRepository favoriteRepository;
+    private FavoriteUserRepository favoriteUserRepository;
 
     @Autowired
     private TrackRepository trackRepository;
@@ -256,7 +255,7 @@ public ResponseEntity<List<User>> getAllUsers() {
 
     @PostMapping("/{userId}/favorites/{trackId}")
     public ResponseEntity<Favorite> createFavorite(@PathVariable long userId, @PathVariable long trackId) throws Exception {
-        favoriteContext.setContext(userRepository, favoriteRepository, trackRepository, userId, trackId);
+        favoriteContext.setContext(userRepository, favoriteUserRepository, trackRepository, userId, trackId);
         return favoriteContext.createFavorite();
     }
     // Tydzień 5 Wzorzec State Koniec
@@ -300,7 +299,7 @@ public ResponseEntity<List<User>> getAllUsers() {
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            List<Favorite> favorites = favoriteRepository.findByUser(user);
+            List<Favorite> favorites = favoriteUserRepository.findByUser(user);
             return new ResponseEntity<>(favorites, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND); // User not found
@@ -316,12 +315,15 @@ public ResponseEntity<List<User>> getAllUsers() {
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            List<Favorite> favorites = favoriteRepository.findByUser(user);
+            List<Favorite> favorites = favoriteUserRepository.findByUser(user);
             return new ResponseEntity<>(favorites, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND); // User not found
         }
     }
+
+    @Autowired
+    private FavoriteUserTrackRepository favoriteUserTrackRepository;
 
     @DeleteMapping("/{userId}/favorites/{trackId}")
     public ResponseEntity<HttpStatus> deleteFavorite(@PathVariable long userId, @PathVariable long trackId) {
@@ -332,10 +334,10 @@ public ResponseEntity<List<User>> getAllUsers() {
             User user = userOptional.get();
             Track track = trackOptional.get();
 
-            Optional<Favorite> existingFavorite = favoriteRepository.findByUserAndTrack(user, track);
+            Optional<Favorite> existingFavorite = favoriteUserTrackRepository.findByUserAndTrack(user, track);
 
             if (existingFavorite.isPresent()) {
-                favoriteRepository.delete(existingFavorite.get());
+                favoriteUserTrackRepository.delete(existingFavorite.get());
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Favorite not found
@@ -357,10 +359,10 @@ public ResponseEntity<List<User>> getAllUsers() {
             User user = userOptional.get();
             Track track = trackOptional.get();
 
-            Optional<Favorite> existingFavorite = favoriteRepository.findByUserAndTrack(user, track);
+            Optional<Favorite> existingFavorite = favoriteUserTrackRepository.findByUserAndTrack(user, track);
 
             if (existingFavorite.isPresent()) {
-                favoriteRepository.delete(existingFavorite.get());
+                favoriteUserTrackRepository.delete(existingFavorite.get());
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Favorite not found

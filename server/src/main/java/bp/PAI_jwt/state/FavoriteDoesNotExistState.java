@@ -3,9 +3,7 @@ package bp.PAI_jwt.state;
 import bp.PAI_jwt.model.Favorite;
 import bp.PAI_jwt.model.Track;
 import bp.PAI_jwt.model.User;
-import bp.PAI_jwt.repository.FavoriteRepository;
-import bp.PAI_jwt.repository.TrackRepository;
-import bp.PAI_jwt.repository.UserRepository;
+import bp.PAI_jwt.repository.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -16,7 +14,8 @@ class FavoriteDoesNotExistState implements FavoriteState {
     @Override
     public ResponseEntity<Favorite> createFavorite(FavoriteContext context) throws Exception {
         UserRepository userRepository = context.getUserRepository();
-        FavoriteRepository favoriteRepository = context.getFavoriteRepository();
+        FavoriteUserRepository favoriteRepository = context.getFavoriteRepository();
+        FavoriteUserTrackRepository favoriteUserTrackRepository = (FavoriteUserTrackRepository) favoriteRepository;
         TrackRepository trackRepository = context.getTrackRepository();
         long userId = context.getUserId();
         long trackId = context.getTrackId();
@@ -28,7 +27,7 @@ class FavoriteDoesNotExistState implements FavoriteState {
             User user = userOptional.get();
             Track track = trackOptional.get();
 
-            Optional<Favorite> existingFavorite = favoriteRepository.findByUserAndTrack(user, track);
+            Optional<Favorite> existingFavorite = favoriteUserTrackRepository.findByUserAndTrack(user, track);
 
             if (existingFavorite.isPresent()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // Favorite already exists

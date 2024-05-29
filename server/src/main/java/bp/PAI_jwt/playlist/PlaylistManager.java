@@ -1,21 +1,13 @@
 package bp.PAI_jwt.playlist;
 
-//Tydzień 7 Początek. Podejście sterowania danymi
+import bp.PAI_jwt.model.Track;
+
 public class PlaylistManager {
-    private final PlaylistRepository playlistRepository;
-
-    public PlaylistManager(PlaylistRepository playlistRepository) {
-        this.playlistRepository = playlistRepository;
+    public void printPlaylistDetails(Playlist playlist) {
+        System.out.println(playlist);
     }
 
-    public void savePlaylist(Playlist playlist) {
-        playlistRepository.savePlaylist(playlist);
+    public void addTrackToPlaylist(Playlist playlist, Track track) {
+        playlist.addTrack(track);
     }
-
-    public void deletePlaylist(Playlist playlist) {
-        playlistRepository.deletePlaylist(playlist);
-    }
-
-    // Inne metody zarządzania playlistami
 }
-//Tydzień 7 Koniec. Podejście sterowania danymi

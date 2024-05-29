@@ -1,5 +1,5 @@
 package bp.PAI_jwt.model;
-
+import java.util.Objects;
 import javax.persistence.*;
 
 @Entity
@@ -47,5 +47,19 @@ public class Favorite  {
 
     public void setTrack(Track track) {
         this.track = track;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Favorite favorite = (Favorite) o;
+        return Objects.equals(user, favorite.user) &&
+                Objects.equals(track, favorite.track);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(user, track);
     }
 }

@@ -34,7 +34,6 @@ public class TrackService {
 
     // Metoda do udekorowania utworów
     public ExtendedTrackInfoDecorator decorateTrack(Track track) {
-        // Tutaj możesz dodać logikę dekorowania utworu, np. dodając dodatkowe informacje
         return new ExtendedTrackInfoDecorator(track, "This is additional info");
     }
 

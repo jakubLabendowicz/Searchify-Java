@@ -20,9 +20,7 @@ import bp.PAI_jwt.interpreter.NameExpression;
 import bp.PAI_jwt.model.Favorite;
 import bp.PAI_jwt.model.Track;
 import bp.PAI_jwt.model.User;
-import bp.PAI_jwt.repository.FavoriteRepository;
-import bp.PAI_jwt.repository.TrackRepository;
-import bp.PAI_jwt.repository.UserRepository;
+import bp.PAI_jwt.repository.*;
 import bp.PAI_jwt.factory.ResponseBody;
 import bp.PAI_jwt.factory.ResponseFactory;
 import bp.PAI_jwt.factory.ResponseFactoryImpl;
@@ -312,13 +310,13 @@ public class TrackController {
     private UserRepository userRepository;
 
     @Autowired
-    private FavoriteRepository favoriteRepository;
+    private FavoriteUserTrackRepository favoriteUserTrackRepository;
 
     private boolean isFavoriteForUser(Track track, String username) {
         Optional<User> userOptional = Optional.ofNullable(userRepository.findByUsername(username));
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            return favoriteRepository.findByUserAndTrack(user, track).isPresent();
+            return favoriteUserTrackRepository.findByUserAndTrack(user, track).isPresent();
         }
         return false;
     }
@@ -396,7 +394,7 @@ public class TrackController {
     }
 
     private List<Track> getFavoritesByName(String name) {
-        List<Favorite> allFavorites = favoriteRepository.findAll();
+        List<Favorite> allFavorites = favoriteUserTrackRepository.findAll();
         Context context = new Context(allFavorites);
         Expression nameExpression = new NameExpression(name);
         Interpreter interpreter = new Interpreter(nameExpression);

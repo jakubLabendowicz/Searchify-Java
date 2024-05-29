@@ -2,6 +2,7 @@ package bp.PAI_jwt.state;
 
 import bp.PAI_jwt.model.Favorite;
 import bp.PAI_jwt.repository.FavoriteRepository;
+import bp.PAI_jwt.repository.FavoriteUserRepository;
 import bp.PAI_jwt.repository.TrackRepository;
 import bp.PAI_jwt.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class FavoriteContext {
     private FavoriteState currentState;
     private UserRepository userRepository;
-    private FavoriteRepository favoriteRepository;
+    private FavoriteUserRepository favoriteRepository;
     private TrackRepository trackRepository;
     private long userId;
     private long trackId;
@@ -24,7 +25,7 @@ public class FavoriteContext {
         this.currentState = state;
     }
 
-    public void setContext(UserRepository userRepository, FavoriteRepository favoriteRepository, TrackRepository trackRepository, long userId, long trackId) {
+    public void setContext(UserRepository userRepository, FavoriteUserRepository favoriteRepository, TrackRepository trackRepository, long userId, long trackId) {
         this.userRepository = userRepository;
         this.favoriteRepository = favoriteRepository;
         this.trackRepository = trackRepository;
@@ -40,7 +41,7 @@ public class FavoriteContext {
         return userRepository;
     }
 
-    public FavoriteRepository getFavoriteRepository() {
+    public FavoriteUserRepository getFavoriteRepository() {
         return favoriteRepository;
     }
 
